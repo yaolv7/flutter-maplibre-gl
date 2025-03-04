@@ -146,6 +146,7 @@ final class MapLibreMapController
 
   private Set<String> interactiveFeatureLayerIds;
   private Map<String, FeatureCollection> addedFeaturesByLayer;
+  private LocationEngineRequest locationEngineRequest;
 
   private LatLngBounds bounds = null;
   Style.OnStyleLoaded onStyleLoadedCallback =
@@ -307,6 +308,11 @@ final class MapLibreMapController
       updateMyLocationTrackingMode();
       updateMyLocationRenderMode();
       locationComponent.addOnCameraTrackingChangedListener(this);
+
+      if(locationEngineRequest.getPriority() == LocationEngineRequest.PRIORITY_HIGH_ACCURACY){
+        locationComponent.setLocationEngine(new LocationEngineProxy(
+            new MapLibreGPSLocationEngine(context)));
+      }
     } else {
       Log.e(TAG, "missing location permissions");
     }
@@ -1870,16 +1876,7 @@ final class MapLibreMapController
 
   @Override
   public void setLocationEngineProperties(LocationEngineRequest locationEngineRequest){
-    if(locationComponent != null){
-        if(locationEngineRequest.getPriority() == LocationEngineRequest.PRIORITY_HIGH_ACCURACY){
-            locationComponent.setLocationEngine(new LocationEngineProxy(
-                new MapLibreGPSLocationEngine(context)));
-     } else {
-       locationComponent.setLocationEngine(
-               LocationEngineDefault.INSTANCE.getDefaultLocationEngine(context));
-            }
-      locationComponent.setLocationEngineRequest(locationEngineRequest);
-    }
+    this.locationEngineRequest=locationEngineRequest;
   }
 
   @Override
