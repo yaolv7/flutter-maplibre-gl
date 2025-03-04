@@ -30,7 +30,7 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
-/example/build/
+/maplibre_gl_example/build/
 pubspec.lock
 
 # Coverage
